@@ -1,0 +1,244 @@
+<html>
+<head>
+	<title>SHELDON'S FRIENDSHIP ALGOITHM</title>
+
+<style type="text/css">
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+/* Button used to open the contact form - fixed at the bottom of the page */
+.open-button {
+  background-color: #555;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  width: 280px;
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/login button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+</style>
+
+<script type="text/javascript">
+function openForm(formid) {
+  document.getElementById(formid).style.display = "block";
+}
+
+function closeForm(formid) {
+  document.getElementById(formid).style.display = "none";
+}
+var name;
+function closeGetNameAndOpenForm(close,open) {
+	window.name=document.getElementById("name").value;
+   closeForm(close);
+   openForm(open);
+}
+function closeOpen(close,open) {
+   closeForm(close);
+   openForm(open);
+}
+function closeOpenSpeak(close,open) {
+   closeForm(close);
+   if((close=="startCall")&&(open=="introduce"))
+   {
+   document.getElementById("intro").innerHTML+="Hello,"+window.name+"? Sheldon Cooper here.It occurred to me you hadn't returned any of my calls because I hadn't offered any concrete suggestions for pursuing our friendship.Perhaps the two of us might share a meal together?";
+   openForm(open);
+  }
+  if((close=="voicemail")&&(open=="introduce"))
+   {
+   document.getElementById("intro").innerHTML+="Hello,"+window.name+"?I'm glad you called back!What do you say the two of us might share a meal together?";
+   openForm(open);
+  }
+
+   if((close=="startCall")&&(open=="voicemail"))
+   {
+   document.getElementById("voice").innerHTML+="(Sheldon left you a voice message...)"+"Hello,"+window.name+"? Sheldon Cooper here.It occurred to me you hadn't returned any of my calls because I hadn't offered any concrete suggestions for pursuing our friendship.Perhaps the two of us might share a meal together?Call me back!";
+   openForm(open);
+  }
+
+   if((close=="introduce")&&(open=="beverage"))
+   {
+   document.getElementById("bev").innerHTML+="I see...Well, then perhaps you'd have time for a hot beverage?";
+   openForm(open);
+  }  
+}
+function closeGetBevChoiceOpenSpeak(close) {
+	var bevchoice=document.getElementById("bevchoice").value.toLowerCase();
+   closeForm(close);
+   if(bevchoice=="tea"||bevchoice=="coffee"||bevchoice=="cocoa")
+   {
+   	openForm("beverageFinal");
+   	 document.getElementById("bevFinal").innerHTML+="Excellent!Let's have "+bevchoice+" together and bein our friendship!";
+   }
+   else
+   {	
+     openForm("recrActivity");
+     if(close=="beverage")
+   	 {
+   	 document.getElementById("activity").innerHTML+="What about a recreational activity? I bet we share some common interests.Tell me an interest of yours..."; 	
+   	 }
+   	 else
+   	{
+   	 document.getElementById("activity").innerHTML+="I'm sorry,I don't do "+bevchoice+".What about a recreational activity? I bet we share some common interests.Tell me an interest of yours...";
+   	}
+   }
+}
+var count=0;
+var interests = [];
+function collectInterestValidate()
+{
+	count=count+1;
+	var act=document.getElementById("act").value;
+	interests.push(act);
+	if(count<=6)
+	{
+	document.getElementById("activity").innerHTML="Really,"+act+"?I don't do "+act+".Tell me another interest of yours...";
+    }
+    else
+    {
+    	closeForm("recrActivity");
+    	openForm("leastObjectionableInterest");
+    	var loi=interests[Math.floor(Math.random() * interests.length)];
+   	    document.getElementById("final").innerHTML+="Okay,Why don't we do "+loi+" together?Let's partake in "+loi+" and begin our friendship!";
+    }
+}
+</script>
+
+</head>
+<body>	
+	<button class="open-button" onclick="openForm('myForm')">Start game</button>
+<div class="form-popup" id="myForm">
+  <div class="form-container">
+    <label for="name"><b>Enter your nick name:</b></label>
+    <input type="text" placeholder="Enter name" name="name" id="name" required>
+    <button class="btn" onclick="closeGetNameAndOpenForm('myForm','startCall')">Go</button>
+  </div>
+</div>
+
+<div class="form-popup" id="startCall">
+  <div class="form-container">
+    <b><i>Phone ringing...</i></b>
+    <button type="submit" class="btn" onclick="closeOpenSpeak('startCall','introduce')">Pick up</button>
+    <button type="button" class="btn cancel" onclick="closeOpenSpeak('startCall','voicemail')">Hang up</button>
+  </div>
+</div>
+
+<div class="form-popup" id="introduce">
+  <div class="form-container">
+  	<div class="form-container" id="intro">
+    </div>
+   <button type="submit" class="btn" onclick="closeOpen('introduce','mealAgreed')">Sure,I'd like a meal.</button>
+    <button type="button" class="btn cancel" onclick="closeOpenSpeak('introduce','beverage')">No man.</button>
+  </div>
+</div>
+
+<div class="form-popup" id="mealAgreed">
+  <div class="form-container">
+  	<div class="form-container" id="intro">Excellent. Let's dine together and begin our friendship!</div>
+  </div>
+</div>
+
+<div class="form-popup" id="voicemail">
+  <div class="form-container">
+  	<div class="form-container" id="voice">
+    </div>
+   <button type="submit" class="btn" onclick="closeOpenSpeak('voicemail','introduce')">Callback</button>
+  </div>
+</div>
+
+<div class="form-popup" id="beverage">
+  <div class="form-container">
+  	<div class="form-container" id="bev">
+    </div>
+   <button type="submit" class="btn" onclick="closeOpen('beverage','bevAgreed')">Sure,I'd like a drink.</button>
+    <button type="button" class="btn cancel" onclick="closeGetBevChoiceOpenSpeak('beverage')">No man.</button>
+  </div>
+</div>
+
+<div class="form-popup" id="bevAgreed">
+  <div class="form-container">
+  	<div class="form-container" id="intro">Excellent.Popular choices include tea,coffee,cocoa.What do you say?</div>
+  	<input type="text" placeholder="Enter your choice" name="bevchoice" id="bevchoice" required>
+  	<button class="btn" onclick="closeGetBevChoiceOpenSpeak('bevAgreed')">Go</button>
+  </div>
+</div>
+
+<div class="form-popup" id="beverageFinal">
+  <div class="form-container">
+  	<div class="form-container" id="bevFinal">
+    </div>
+  </div>
+</div>
+
+<div class="form-popup" id="recrActivity">
+  <div class="form-container">
+  	<div class="form-container" id="activity"></div>
+  	<input type="text" placeholder="Enter your interest" name="act" id="act" required>
+  	<button class="btn" onclick="collectInterestValidate()">Go</button>
+  </div>
+</div>
+
+<div class="form-popup" id="leastObjectionableInterest">
+  <div class="form-container">
+  	<div class="form-container" id="final"></div>
+  </div>
+</div>
+
+</body>
+</html>
